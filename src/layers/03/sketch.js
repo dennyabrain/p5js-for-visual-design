@@ -1,51 +1,92 @@
 export const grid = {
-  rows: 40,
-  cols: 20,
+  rows: 160,
+  cols: 80,
   show: false,
   color: '#2a2a4a',
 };
 
-export function setup() {
-    // stamp('leaf', ...cell(0, 0), { width: 40, height: 40, angle: 20 });
-    for(var i=10;i<40;i++){
-      var dim = 4*random(i)
-      stamp('leaf', ...cell(random(i), random(i)), { width: dim, height: dim, angle: random(i*180) });
-    }
+const NUM_OF_POINTS = 20
+const PATTERN = 10
+
+// let points = [];
+
+function generatePoints(count = 7) {
+  const x = Array.from({ length: count }, (el, ix) => [
+    floor(random(100)),
+    floor(ix)
+  ]);
+  // console.log(x)
+  return x
 }
 
-defineElement('leaf', (w, h) => {
-  fill("#ff0292")
-  stroke("#ff0292")
-//   ellipse(0, 0, w, h);
-//   ellipse(2, 2, w, h);
-  // arc(0,0,w/2,h/2, 0, HALF_PI)
-  // arc(w/2,0,w,h, 0, HALF_PI)
-  // arc(0,h/2,w,h, 0, HALF_PI)
-//   line(w,0,w,h)
-//   line(0,h,w,h)
-  arc(0,0,w/2,h/2, 0, QUARTER_PI)
-  arc(0,0,random(0.7)*w,random(0.7)*h, 1.4*QUARTER_PI, HALF_PI)
-  arc(0,0,random(0.7)*w,random(0.7), 1.2*HALF_PI, HALF_PI+QUARTER_PI)
-  arc(0,0,0.7*w,0.7*h, 1.1*(QUARTER_PI+HALF_PI), 1.2*PI)
 
-});
+export function setup() {
+    // points = generatePoints(NUM_OF_POINTS);
+    fill("#ff9202")
+    stroke("#ff9202")
+    strokeWeight(2)
+    // let points=[
+    //   [0,0], [1,0], [2,0], [1,2], [3,3], [3,6], [2,6]
+    // ]
+    let points = generatePoints(101)
+    for (let i = 0; i < points.length - 1; i++) {
+      line(...cell(...points[i]), ...cell(...points[i + 1]));
+    }
+
+    let points_2 = Array.from({ length: 101 }, (el, ix) => [
+      floor(ix),
+      floor(random(80))
+    ]);
+    for (let i = 0; i < points_2.length - 1; i++) {
+      line(...cell(...points_2[i]), ...cell(...points_2[i + 1]));
+    }
+    // line(...cell(0,0), ...cell(1,0))
+    // line(...cell(1,0), ...cell(2,0))
+    // line(...cell(2,0), ...cell(1,2))
+    // line(...cell(1,2), ...cell(3,3))
+    // line(...cell(3,3), ...cell(3,6))
+    // line(...cell(3,6), ...cell(2,6))
+}
+
+let points = [
+        [0,0], [1,0], [2,0]
+    ]
 
 export function draw() {
-    
-    // circle(...cell(1,1), 4)
-    // circle(...cell(2,1), 4)
 
-    // let x = 100 * noise(0.005 * frameCount);
-    // let y = 100 * noise(0.005 * frameCount + 10000);
-    // // Draw the point.
-    // strokeWeight(5);
-    // point(x, y);
+
     
-    // stamp('leaf', mouseX, mouseY, { width: 20, height: 20 });
+    // for (let i = 0; i < points.length - 1; i++) {
+    //     line(...cell(...points[i]), ...cell(...points[i + 1]));
+    // }
+
+    // var prev_x = 0; 
+    // var prev_y = 0;
+    // for(var x=0; x<grid.cols/2+1; x++){  
+    //     for(var y=0; y<4; y++){
+    //         line(...cell(prev_x, prev_y), ...cell(x, Math.floor(Math.random()*5)))
+    //         prev_x = x; 
+    //         prev_y = y;
+    //     }
+    // }
+   
+    // for(var a=0;a<10;a++){
+    //     for(var b=0;b<grid.cols/2;b++){
+
+    //     }
+    // }
+
+    
+    // for(var b=0;b<grid.cols/2;b++){
+    //     var x = Math.floor(Math.random()*b)
+    //     line(...cell(prev_x, prev_y), ...cell(x, b))
+    //     prev_x = x; 
+    //     prev_y = b;
+    // }
 }
 
 export const reflect = [
-  { axis: 'x', at: 0.5 },  
+  { axis: 'x', at: 0.5, angle: 90 },  
   { axis: 'y', at: 0.5 },  
 ];
 
