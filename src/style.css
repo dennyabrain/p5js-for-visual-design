@@ -1,0 +1,34 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+  background: #1a1a2e;
+}
+
+#app {
+  border: 1px solid #efefef;
+}
+
+#save-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  background: #ffffff18;
+  color: #fff;
+  border: 1px solid #ffffff44;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+#save-btn:hover {
+  background: #ffffff30;
+}
