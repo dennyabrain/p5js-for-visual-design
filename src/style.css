@@ -5,14 +5,25 @@
 }
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100dvh;
+  overflow: hidden;
   background: #1a1a2e;
 }
 
+#viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+#viewport.panning, #viewport.panning * {
+  cursor: grabbing !important;
+}
+
 #app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
   border: 1px solid #efefef;
 }
 

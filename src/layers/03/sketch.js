@@ -40,6 +40,8 @@ export function setup() {
     for (let i = 0; i < points_2.length - 1; i++) {
       line(...cell(...points_2[i]), ...cell(...points_2[i + 1]));
     }
+
+    rect(...cell(20,40), ...cell(20,60))
     // line(...cell(0,0), ...cell(1,0))
     // line(...cell(1,0), ...cell(2,0))
     // line(...cell(2,0), ...cell(1,2))
