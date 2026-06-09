@@ -1,6 +1,7 @@
 const MIN_SCALE = 0.05;
 const MAX_SCALE = 8;
 const ZOOM_SPEED = 0.001;
+const STORAGE_KEY = 'p5live_viewport';
 
 export function initViewport(container) {
   let scale = 1;
@@ -15,6 +16,7 @@ export function initViewport(container) {
 
   function apply() {
     el.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ scale, tx, ty }));
   }
 
   function fitToScreen() {
@@ -90,7 +92,13 @@ export function initViewport(container) {
     }
   });
 
-  // Fit on load, and on resize
-  fitToScreen();
+  // Restore saved state across HMR reloads; fit to screen on first visit.
+  const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+  if (saved) {
+    ({ scale, tx, ty } = saved);
+    apply();
+  } else {
+    fitToScreen();
+  }
   window.addEventListener('resize', fitToScreen);
 }

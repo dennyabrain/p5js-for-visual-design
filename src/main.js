@@ -3,7 +3,7 @@ import { initViewport } from './viewport.js';
 
 createFramework({
   width: 432,
-  height: 768,
+  height: 576,
   container: document.getElementById('app'),
 });
 
