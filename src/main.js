@@ -2,8 +2,8 @@ import { createFramework } from './framework/index.js';
 import { initViewport } from './viewport.js';
 
 createFramework({
-  width: 432,
-  height: 576,
+  width: 1080,
+  height: 1920,
   container: document.getElementById('app'),
 });
 

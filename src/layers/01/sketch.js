@@ -34,7 +34,7 @@ export function setup() {
   brush.add("uli", {
     type:    "default",
     weight:  1.2,
-    scatter: 18.95,
+    scatter: 32.95,
     sharpness: 0.3,
     grain:     0.9,
     opacity: 170,
@@ -51,12 +51,14 @@ export function setup() {
   let colors = ["#03045e","#023e8a","#0077b6","#0096c7","#00b4d8","#48cae4","#90e0ef","#ade8f4","#caf0f8"]
 
   
-  for(let i=0;i<20;i++){
+  for(let i=0;i<80;i++){
     rotate(36);
     // brush.set('HB', '#001491', random(12));
     let color = colors[Math.floor(Math.random() * colors.length)] 
     brush.set('uli', color, random(12));
-    brush.line(...cell(2,0), ...cell(1,8))
+    let x = random(grid.rows) 
+    // brush.set('HB', '#001491', random(12));
+    brush.line(...cell(x,random(grid.cols)), ...cell(x,random(grid.cols)))
   }
 
   

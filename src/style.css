@@ -43,3 +43,181 @@ body {
 #save-btn:hover {
   background: #ffffff30;
 }
+
+/* ── Drawing panel ─────────────────────────────────────────── */
+#draw-panel {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12, 12, 24, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 0.6rem 1rem;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  z-index: 100;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.dp-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dp-brushes {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.dp-brush {
+  padding: 0.3rem 0.65rem;
+  background: rgba(255, 255, 255, 0.07);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 0.12s, color 0.12s;
+}
+
+.dp-brush:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ddd;
+}
+
+.dp-brush.active {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.dp-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.dp-colors {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.dp-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+}
+
+.dp-swatch:hover {
+  transform: scale(1.2);
+}
+
+.dp-swatch.active {
+  border-color: #fff;
+  transform: scale(1.15);
+}
+
+.dp-custom-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: border-color 0.12s, color 0.12s;
+  position: relative;
+  overflow: hidden;
+}
+
+.dp-custom-color:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
+.dp-custom-color input[type="color"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+}
+
+.dp-size {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #999;
+  font-size: 0.73rem;
+}
+
+.dp-size input[type="range"] {
+  width: 72px;
+  accent-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+#dp-clear {
+  padding: 0.3rem 0.7rem;
+  background: rgba(220, 60, 60, 0.18);
+  color: #ff8a8a;
+  border: 1px solid rgba(220, 60, 60, 0.3);
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 0.12s, color 0.12s;
+}
+
+#dp-clear:hover {
+  background: rgba(220, 60, 60, 0.32);
+  color: #ffb0b0;
+}
+
+.dp-badge {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0 0.3rem;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.5);
+  vertical-align: middle;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.dp-color-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-left: 0.3rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+.dp-colors--locked {
+  opacity: 0.35;
+  pointer-events: none;
+}

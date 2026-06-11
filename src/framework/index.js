@@ -147,6 +147,10 @@ export function createFramework({ width = 800, height = 600, container } = {}) {
           const passes = getReflectionPasses(module.reflect, width, height);
           for (const { a, b, c, d, e, f } of passes) {
             p.push();
+            // p5.brush reads the model matrix via getAffineMatrix() to position
+            // strokes. The outer p.translate(-w/2,-h/2) would double-offset every
+            // stroke, so we reset to identity here before applying any reflection.
+            p.resetMatrix();
             p.applyMatrix(a, b, c, d, e, f);
             module.draw?.();
             p.pop();
