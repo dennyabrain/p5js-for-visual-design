@@ -75,3 +75,9 @@ Adding frag.glsl automatically applies the given fragment shader to the content 
 `npm run dev`
 Starts a local vitejs dev server that makes your sketch available at `localhost:5173`.
 It supports live reload, so any changes to code done in the IDE reflects immediately in the browser.
+
+
+
+# Roadmap Features
+- Allow importing images to trace hand drawn sketches
+- Allow import of images and apply glsl shaders
