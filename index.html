@@ -8,10 +8,21 @@
     <title>p5-live</title>
   </head>
   <body>
-    <div id="viewport">
-      <div id="app"></div>
+    <div id="home">
+      <header class="home-header">
+        <h1>p5-live</h1>
+      </header>
+      <div id="project-grid"></div>
     </div>
-    <button id="save-btn">Save PNG</button>
+
+    <div id="project-view" style="display:none">
+      <div id="viewport">
+        <div id="app"></div>
+      </div>
+      <button id="save-btn">Save PNG</button>
+      <button id="back-btn">← Projects</button>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

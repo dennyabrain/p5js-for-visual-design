@@ -1,16 +1,26 @@
 /**
- * Discovers and returns sorted layer modules via Vite's import.meta.glob.
- * Each module should export: draw(p), optional setup(p), optional grid config.
- * Layers may also include frag.glsl / vert.glsl for a post-process shader pass.
- *
+ * Discovers and returns all project configs.
+ * @returns {Array<{ slug: string, name: string, width?: number, height?: number }>}
+ */
+export function loadProjects() {
+  const mods = import.meta.glob('../projects/*/project.js', { eager: true });
+  return Object.entries(mods).map(([path, module]) => {
+    const slug = path.match(/\/projects\/([^/]+)\//)?.[1] ?? path;
+    return { slug, ...module };
+  });
+}
+
+/**
+ * Discovers and returns sorted layer modules for a given project slug.
  * @returns {Array<{ name: string, module: object, frag?: string, vert?: string }>}
  */
-export function loadLayers() {
-  const raw   = import.meta.glob('../layers/*/sketch.js', { eager: true });
-  const frags = import.meta.glob('../layers/*/frag.glsl', { eager: true, query: '?raw', import: 'default' });
-  const verts = import.meta.glob('../layers/*/vert.glsl', { eager: true, query: '?raw', import: 'default' });
+export function loadLayers(projectSlug) {
+  const raw   = import.meta.glob('../projects/*/layers/*/sketch.js', { eager: true });
+  const frags = import.meta.glob('../projects/*/layers/*/frag.glsl', { eager: true, query: '?raw', import: 'default' });
+  const verts = import.meta.glob('../projects/*/layers/*/vert.glsl', { eager: true, query: '?raw', import: 'default' });
 
   return Object.entries(raw)
+    .filter(([path]) => path.includes(`/projects/${projectSlug}/`))
     .map(([path, module]) => {
       const name = path.match(/\/layers\/([^/]+)\//)?.[1] ?? path;
       const base = path.replace('sketch.js', '');

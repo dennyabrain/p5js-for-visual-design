@@ -65,8 +65,8 @@ function makeBrushProxy(b, ox, oy) {
 /**
  * @param {{ width?: number, height?: number, container?: HTMLElement }} config
  */
-export function createFramework({ width = 800, height = 600, container } = {}) {
-  const layers = loadLayers();
+export function createFramework({ width = 800, height = 600, container, projectSlug } = {}) {
+  const layers = loadLayers(projectSlug);
   const brushProxy = makeBrushProxy(brush, width / 2, height / 2);
 
   new p5((p) => {

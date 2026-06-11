@@ -221,3 +221,77 @@ body {
   opacity: 0.35;
   pointer-events: none;
 }
+
+/* ── Homepage ──────────────────────────────────────────── */
+#home {
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  font-family: system-ui, sans-serif;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.home-header h1 {
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+#project-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.project-card {
+  display: block;
+  text-decoration: none;
+  padding: 1.25rem 1.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  min-width: 200px;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.project-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.project-card__name {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 0.4rem;
+}
+
+.project-card__meta {
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+#back-btn {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: #ffffff18;
+  color: #fff;
+  border: 1px solid #ffffff44;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+#back-btn:hover {
+  background: #ffffff30;
+}
