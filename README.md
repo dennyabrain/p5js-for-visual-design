@@ -81,3 +81,5 @@ It supports live reload, so any changes to code done in the IDE reflects immedia
 # Roadmap Features
 - Allow importing images to trace hand drawn sketches
 - Allow import of images and apply glsl shaders
+- Onion mode to allow motion and animation
+- Export to mp4
