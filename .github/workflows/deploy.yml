@@ -29,7 +29,7 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_BASE_URL: /iml-playground/
+          VITE_BASE_URL: /p5js-for-visual-design/
 
       - uses: actions/upload-pages-artifact@v3
         with:
