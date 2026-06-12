@@ -83,3 +83,4 @@ It supports live reload, so any changes to code done in the IDE reflects immedia
 - Allow import of images and apply glsl shaders
 - Onion mode to allow motion and animation
 - Export to mp4
+- draw curved hatches
