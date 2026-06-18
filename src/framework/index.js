@@ -4,6 +4,7 @@ import { loadLayers } from './layer-manager.js';
 import { drawGrid, createCellFn } from './grid.js';
 import { injectP5Globals } from './p5-globals.js';
 import { getReflectionPasses } from './reflect.js';
+import { buildParamsPanel } from './params-panel.js';
 
 // p5.brush checks `typeof p5` (the global) before calling p5.registerAddon.
 // Since p5 is an ES module it doesn't set window.p5, so we must set it first,
@@ -67,6 +68,7 @@ function makeBrushProxy(b, ox, oy) {
  */
 export function createFramework({ width = 800, height = 600, container, projectSlug } = {}) {
   const layers = loadLayers(projectSlug);
+  const paramsMap = buildParamsPanel(layers);
   const brushProxy = makeBrushProxy(brush, width / 2, height / 2);
 
   new p5((p) => {
@@ -89,11 +91,13 @@ export function createFramework({ width = 800, height = 600, container, projectS
       for (const { name, module, frag, vert } of layers) {
         globalThis.cell = createCellFn(module.grid);
 
+        const params = paramsMap.get(name) ?? {};
+
         if (module.useBrush) {
           brushState.set(name, true);
           globalThis.brush = brushProxy;
           injectP5Globals(p);
-          await module.setup?.();
+          await module.setup?.(params);
           injectP5Globals(p);
         } else if (frag || vert) {
           const drawBuf   = p.createGraphics(width, height);
@@ -107,7 +111,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             drawBuf.push();
             drawBuf.applyMatrix(a, b, c, d, e, f);
-            await module.setup?.();
+            await module.setup?.(params);
             drawBuf.pop();
           }
           injectP5Globals(p);
@@ -119,7 +123,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             p.push();
             p.applyMatrix(a, b, c, d, e, f);
-            await module.setup?.();
+            await module.setup?.(params);
             p.pop();
           }
           p.pop();
@@ -135,6 +139,8 @@ export function createFramework({ width = 800, height = 600, container, projectS
         globalThis.cell = createCellFn(module.grid);
         const brushSt  = brushState.get(name);
         const shaderSt = shaderState.get(name);
+
+        const params = paramsMap.get(name) ?? {};
 
         if (brushSt) {
           globalThis.brush = brushProxy;
@@ -152,7 +158,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
             // stroke, so we reset to identity here before applying any reflection.
             p.resetMatrix();
             p.applyMatrix(a, b, c, d, e, f);
-            module.draw?.();
+            module.draw?.(params);
             p.pop();
           }
         } else if (shaderSt) {
@@ -164,7 +170,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             drawBuf.push();
             drawBuf.applyMatrix(a, b, c, d, e, f);
-            module.draw?.();
+            module.draw?.(params);
             drawBuf.pop();
           }
           injectP5Globals(p);
@@ -193,7 +199,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             p.push();
             p.applyMatrix(a, b, c, d, e, f);
-            module.draw?.();
+            module.draw?.(params);
             p.pop();
           }
         }

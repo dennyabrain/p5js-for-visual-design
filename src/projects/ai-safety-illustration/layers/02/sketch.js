@@ -151,6 +151,14 @@ export function setup() {
   for (const { id, config } of BRUSH_DEFS) {
     brush.add(id, config);
   }
+
+  // brush.mass("pastel", "#4b6cb7", {
+  //   precision: 0.55,
+  //   strength: 0.9,
+  //   gradient: 0.35,
+  //   outline: true,
+  // });
+  // brush.circle(width / 2, height / 2, 180);
   background(252, 248, 243);
   _buildPanel();
 }
