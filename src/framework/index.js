@@ -132,6 +132,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
     };
 
     p.draw = () => {
+      p.clear();
       // WEBGL canvas has center origin; shift to top-left for consistent coordinates.
       p.translate(-width / 2, -height / 2);
 
@@ -194,6 +195,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
 
           p.image(resultBuf, 0, 0);
         } else {
+          injectP5Globals(p);
           drawGrid(p, module.grid);
           const passes = getReflectionPasses(module.reflect, p.width, p.height);
           for (const { a, b, c, d, e, f } of passes) {

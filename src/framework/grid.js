@@ -12,9 +12,9 @@
  */
 export function createCellFn(grid) {
   if (!grid) return () => { throw new Error('No grid configured for this layer'); };
-  const { rows, cols } = grid;
 
   return function cell(col, row, anchor = 'center') {
+    const { rows, cols } = typeof grid === 'function' ? grid(width, height) : grid;
     const cellW = width / cols;
     const cellH = height / rows;
     const x0 = col * cellW;
@@ -36,9 +36,10 @@ export function createCellFn(grid) {
  * @param {{ rows: number, cols: number, show: boolean, color: string }} config
  */
 export function drawGrid(p, config) {
-  if (!config || !config.show) return;
+  const resolved = typeof config === 'function' ? config(p.width, p.height) : config;
+  if (!resolved || !resolved.show) return;
 
-  const { rows, cols, color = '#ffffff' } = config;
+  const { rows, cols, color = '#ffffff' } = resolved;
   const cellW = p.width / cols;
   const cellH = p.height / rows;
 
