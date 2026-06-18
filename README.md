@@ -62,13 +62,20 @@ export const reflect = [
 ];
 ```
 
-```
-
 5. Shape
 Allow defining a shape and then referencing the shape to draw with its x,y coordinates, angle and width, height
 
 6. Shaders
 Adding frag.glsl automatically applies the given fragment shader to the content of that layer.
+
+7. Sketch Parameters
+It is possible to define controls for the sketch for users
+```js
+export const PARAMS = {
+    PATTERN_OFFSET: { type: 'number', min: 0, max: 25, step: 1, default: 5 },
+    HEADING: { type: 'string', default: 'Poster Headline' },
+}
+```
 
 
 ### To Run locally
