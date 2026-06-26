@@ -91,3 +91,4 @@ It supports live reload, so any changes to code done in the IDE reflects immedia
 - Onion mode to allow motion and animation
 - Export to mp4
 - draw curved hatches
+- support pallete per project

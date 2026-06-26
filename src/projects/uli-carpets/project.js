@@ -1,3 +1,3 @@
 export const name = 'Uli Carpets';
-export const width = 841;
-export const height = 148;
+export const width = 1748;
+export const height = 2480;

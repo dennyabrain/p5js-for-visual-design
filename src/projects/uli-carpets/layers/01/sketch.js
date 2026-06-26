@@ -77,21 +77,25 @@ export function draw(params) {
     // drawCircle(8,8,16)
     
     
+    
 
     for(var x=0;x<params.PATTERN_COUNT;x++){
         fill(patternColors[x%patternColors.length])
         for(var i=x*params.PATTERN_OFFSET;i<cols/2;i++){
             var j = x*params.PATTERN_OFFSET+Math.floor(params.PATTERN_WIDTH*noise(0.9*i))
             circle(...cell(i,j,'left'), params.CELL_WIDTH)
+            // rect(...cell(i,j,'left'),480,480)
             // drawCircle(...cell(i,j),params.CELL_WIDTH)
         }
         for(var i=x*params.PATTERN_OFFSET;i<rows/2;i++){
             var j = x*params.PATTERN_OFFSET+Math.floor(params.PATTERN_WIDTH*noise(0.9*i))
             circle(...cell(j,i,'left'), params.CELL_WIDTH)
+            // rect(...cell(j,i,'left'),480,480)
             // drawCircle(...cell(i,j),params.CELL_WIDTH)
         }
     }
     
+    // rect(0,0,8,8)
 
     // for(var i=0;i<cols/2;i++){
     //     var j = Math.floor(3*noise(0.5*i))
