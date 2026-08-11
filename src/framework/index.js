@@ -1,7 +1,7 @@
 import './elements.js';
 import p5 from 'p5';
 import { loadLayers } from './layer-manager.js';
-import { drawGrid, createCellFn } from './grid.js';
+import { drawGrid, createCellFn, resolveGrid } from './grid.js';
 import { injectP5Globals } from './p5-globals.js';
 import { getReflectionPasses } from './reflect.js';
 import { buildParamsPanel } from './params-panel.js';
@@ -85,21 +85,40 @@ export function createFramework({ width = 800, height = 600, container, projectS
     // { brushBuf: p5.Graphics }
     const brushState = new Map();
 
+    // Per-layer loaded p5.Image objects: Map<layerName, Record<filename, p5.Image>>
+    const imageStore = new Map();
+
     p.setup = async () => {
       // p5.brush requires WEBGL on the main canvas.
       const canvas = p.createCanvas(width, height, p.WEBGL);
       if (container) canvas.parent(container);
 
-      for (const { name, module, frag, vert } of layers) {
+      for (const { name, module, frag, vert, imageUrls } of layers) {
         globalThis.cell = createCellFn(module.grid);
+        const _g = resolveGrid(module.grid, width, height);
+        globalThis.cols = _g?.cols ?? 0;
+        globalThis.rows = _g?.rows ?? 0;
 
         const params = paramsMap.get(name) ?? {};
+
+        // Load any PNG images declared in the layer folder.
+        const images = Object.fromEntries(
+          await Promise.all(
+            Object.entries(imageUrls).map(([filename, url]) =>
+              new Promise((resolve, reject) => {
+                p.loadImage(url, img => resolve([filename, img]), reject);
+              })
+            )
+          )
+        );
+        imageStore.set(name, images);
 
         if (module.useBrush) {
           brushState.set(name, true);
           globalThis.brush = brushProxy;
           injectP5Globals(p);
-          await module.setup?.(params);
+          Object.defineProperty(globalThis, 'image', { configurable: true, value: (img, x = 0, y = 0, ...rest) => p.image(img, x - width / 2, y - height / 2, ...rest) });
+          await module.setup?.(params, { images });
           injectP5Globals(p);
         } else if (frag || vert) {
           const drawBuf   = p.createGraphics(width, height);
@@ -113,7 +132,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             drawBuf.push();
             drawBuf.applyMatrix(a, b, c, d, e, f);
-            await module.setup?.(params);
+            await module.setup?.(params, { images });
             drawBuf.pop();
           }
           injectP5Globals(p);
@@ -125,7 +144,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             p.push();
             p.applyMatrix(a, b, c, d, e, f);
-            await module.setup?.(params);
+            await module.setup?.(params, { images });
             p.pop();
           }
           p.pop();
@@ -140,10 +159,14 @@ export function createFramework({ width = 800, height = 600, container, projectS
 
       for (const { name, module } of layers) {
         globalThis.cell = createCellFn(module.grid);
+        const _g = resolveGrid(module.grid, width, height);
+        globalThis.cols = _g?.cols ?? 0;
+        globalThis.rows = _g?.rows ?? 0;
         const brushSt  = brushState.get(name);
         const shaderSt = shaderState.get(name);
 
         const params = paramsMap.get(name) ?? {};
+        const images = imageStore.get(name) ?? {};
 
         if (brushSt) {
           globalThis.brush = brushProxy;
@@ -152,6 +175,9 @@ export function createFramework({ width = 800, height = 600, container, projectS
           // the correct target. brush.load(buffer) defers the flush, causing
           // strokes to be lost by the time we composite.
           injectP5Globals(p);
+          // resetMatrix() (below) puts WEBGL origin at center; re-map image() so
+          // sketch code can use top-left coordinates just like every other layer.
+          Object.defineProperty(globalThis, 'image', { configurable: true, value: (img, x = 0, y = 0, ...rest) => p.image(img, x - width / 2, y - height / 2, ...rest) });
           drawGrid(p, module.grid);
           const passes = getReflectionPasses(module.reflect, width, height);
           for (const { a, b, c, d, e, f } of passes) {
@@ -161,7 +187,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
             // stroke, so we reset to identity here before applying any reflection.
             p.resetMatrix();
             p.applyMatrix(a, b, c, d, e, f);
-            module.draw?.(params);
+            module.draw?.(params, { images });
             p.pop();
           }
         } else if (shaderSt) {
@@ -173,7 +199,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
           for (const { a, b, c, d, e, f } of passes) {
             drawBuf.push();
             drawBuf.applyMatrix(a, b, c, d, e, f);
-            module.draw?.(params);
+            module.draw?.(params, { images });
             drawBuf.pop();
           }
           injectP5Globals(p);
@@ -198,12 +224,13 @@ export function createFramework({ width = 800, height = 600, container, projectS
           p.image(resultBuf, 0, 0);
         } else {
           injectP5Globals(p);
+          module.beforeDraw?.(params, { images });
           drawGrid(p, module.grid);
           const passes = getReflectionPasses(module.reflect, p.width, p.height);
           for (const { a, b, c, d, e, f } of passes) {
             p.push();
             p.applyMatrix(a, b, c, d, e, f);
-            module.draw?.(params);
+            module.draw?.(params, { images });
             p.pop();
           }
         }

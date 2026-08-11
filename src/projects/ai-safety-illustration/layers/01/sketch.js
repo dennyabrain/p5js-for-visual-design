@@ -31,7 +31,7 @@ export function setup() {
   });
 }
 
-export function draw() {
+export function draw(params, {images}) {
   if (_done) return;
   _done = true;
 
@@ -39,6 +39,9 @@ export function draw() {
 
   let colors = ["#03045e","#023e8a","#0077b6","#0096c7","#00b4d8","#48cae4","#90e0ef","#ade8f4","#caf0f8"]
 
+  // rect(30, 20, 55, 55);
+  // image(images['boy-with-cup-2.png'], 0, 0)
+  image(images['pepsi.png'], 0, 0)
   // for(let i=0;i<80;i++){
   //   rotate(36);
   //   let color = colors[Math.floor(Math.random() * colors.length)]

@@ -1,3 +1,16 @@
+export function resolveGrid(config, w, h) {
+  const raw = typeof config === 'function' ? config(w, h) : config;
+  if (!raw) return raw;
+  if (raw.cellSize != null) {
+    return {
+      ...raw,
+      cols: Math.round(w / raw.cellSize),
+      rows: Math.round(h / raw.cellSize),
+    };
+  }
+  return raw;
+}
+
 /**
  * Returns a cell() function scoped to the given grid config.
  * cell(col, row, anchor?) → [x, y]  (0-indexed, spreadable into p5 calls)
@@ -5,6 +18,8 @@
  * Anchors: 'center' (default), 'top', 'bottom', 'left', 'right'
  *
  * Uses p5 globals `width` and `height` so it's always current.
+ *
+ * Supports { rows, cols } or { cellSize } (px) — rows/cols computed from canvas size.
  *
  * Example:
  *   circle(...cell(2, 1), 40);
@@ -14,18 +29,22 @@ export function createCellFn(grid) {
   if (!grid) return () => { throw new Error('No grid configured for this layer'); };
 
   return function cell(col, row, anchor = 'center') {
-    const { rows, cols } = typeof grid === 'function' ? grid(width, height) : grid;
+    const { rows, cols } = resolveGrid(grid, width, height);
     const cellW = width / cols;
     const cellH = height / rows;
     const x0 = col * cellW;
     const y0 = row * cellH;
 
     switch (anchor) {
-      case 'top-left':    return [x0, y0];
-      case 'top-right': return [x0 + cellW, y0];
-      case 'bottom-left':   return [x0,              y0 + cellH];
-      case 'bottom-right':  return [x0 + cellW,      y0 + cellH];
-      default:       return [x0 + cellW / 2,  y0 + cellH / 2];
+      case 'top-left':    return [x0,             y0];
+      case 'top':         return [x0 + cellW / 2, y0];
+      case 'top-right':   return [x0 + cellW,     y0];
+      case 'left':        return [x0,             y0 + cellH / 2];
+      case 'right':       return [x0 + cellW,     y0 + cellH / 2];
+      case 'bottom-left': return [x0,             y0 + cellH];
+      case 'bottom':      return [x0 + cellW / 2, y0 + cellH];
+      case 'bottom-right':return [x0 + cellW,     y0 + cellH];
+      default:            return [x0 + cellW / 2, y0 + cellH / 2];
     }
   };
 }
@@ -36,7 +55,7 @@ export function createCellFn(grid) {
  * @param {{ rows: number, cols: number, show: boolean, color: string }} config
  */
 export function drawGrid(p, config) {
-  const resolved = typeof config === 'function' ? config(p.width, p.height) : config;
+  const resolved = resolveGrid(config, p.width, p.height);
   if (!resolved || !resolved.show) return;
 
   const { rows, cols, color = '#ffffff' } = resolved;
