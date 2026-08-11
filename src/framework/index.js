@@ -71,6 +71,8 @@ export function createFramework({ width = 800, height = 600, container, projectS
   const paramsMap = buildParamsPanel(layers);
   const brushProxy = makeBrushProxy(brush, width / 2, height / 2);
 
+  const hasBrushLayers = layers.some(l => l.module.useBrush);
+
   new p5((p) => {
     injectP5Globals(p);
     brush.instance(p);
@@ -132,7 +134,7 @@ export function createFramework({ width = 800, height = 600, container, projectS
     };
 
     p.draw = () => {
-      p.clear();
+      if (!hasBrushLayers) p.clear();
       // WEBGL canvas has center origin; shift to top-left for consistent coordinates.
       p.translate(-width / 2, -height / 2);
 

@@ -1,3 +1,3 @@
 export const name = 'Uli Pattern';
-export const width = 500;
-export const height = 700;
+export const width = 1748;
+export const height = 2480;

@@ -1,16 +1,19 @@
 export const grid = (w,h) => ({
-  rows: h/8,
-  cols: w/8,
+  rows: h/32,
+  cols: w/32,
   color: '#2a2a2a',
+  // show: true
 });
 
 let patternColors = ["#734112","#f2c192"]
 
 // Rectangles defined in grid-cell coordinates
 const RECTS = [
-    { x: 5,  y: 5,  w: 20, h: 30 },
-    { x: 35, y: 12, w: 18, h: 25 },
-    { x: 8,  y: 52, w: 38, h: 22 },
+    { x: 4,  y: 10,  w: 30, h: 20 },
+    { x: 38,  y: 6,  w: 12, h: 14 },
+    { x: 4,  y: 36,  w: 30, h: 20 },
+    { x: 39,  y: 28,  w: 12, h: 28 },
+    { x: 4,  y: 60,  w: 34, h: 14 },
 ]
 
 // Signed distance to rectangle border: negative = inside
@@ -24,7 +27,7 @@ function rectSDF(px, py, rx, ry, rw, rh) {
 
 // shape: 'circle' | 'rect' | 'triangle' | 'diamond'
 // opts for circle:    { size }
-// opts for rect:      { w, h }
+// opts for rect:      { w, h, angle }  — angle in degrees
 // opts for triangle:  { size }
 // opts for diamond:   { w, h }
 function drawShape(x, y, shape, opts = {}) {
@@ -32,10 +35,16 @@ function drawShape(x, y, shape, opts = {}) {
         case 'circle':
             circle(x, y, opts.size ?? 8)
             break
-        case 'rect':
+        case 'rect': {
+            const angleDeg = opts.angle ?? 0
+            push()
+            translate(x, y)
+            rotate(angleDeg * Math.PI / 180)
             rectMode(CENTER)
-            rect(x, y, opts.w ?? 8, opts.h ?? 8)
+            rect(0, 0, opts.w ?? 8, opts.h ?? 8)
+            pop()
             break
+        }
         case 'triangle': {
             const s = (opts.size ?? 8) / 2
             triangle(x, y - s, x + s, y + s, x - s, y + s)
@@ -52,8 +61,9 @@ function drawShape(x, y, shape, opts = {}) {
 export const PARAMS = {
     PATTERN_COUNT: {type: 'number', step: 1, min: 0, max: 25, default: 12},
     PATTERN_WIDTH: { type: 'number', step: 1, min: 0, max: 25, default: 7 },
-    CELL_WIDTH: {type: 'number', step: 0.1, min: 0, max: 32, default: 6.2},
-    CELL_HEIGHT: {type: 'number', step: 0.1, min: 0, max: 32, default: 6.2},
+    CELL_WIDTH: {type: 'number', step: 0.1, min: 0, max: 32, default: 32},
+    CELL_HEIGHT: {type: 'number', step: 0.1, min: 0, max: 32, default: 14.5},
+    ANGLE: {type: 'number', step: 1, min: -180, max: 180, default: 127},
     BORDER_ZONE: {type: 'number', step: 1, min: 0, max: 30, default: 10},
 }
 
@@ -89,7 +99,8 @@ export function draw(params) {
             }
 
             fill(patternColors[colorIdx % patternColors.length])
-            drawShape(...cell(j, i, 'left'), 'diamond', { w: params.CELL_WIDTH, h: params.CELL_HEIGHT })
+            drawShape(...cell(j, i, 'left'), 'rect', { w: params.CELL_WIDTH, h: params.CELL_HEIGHT, angle: params.ANGLE })
+            // drawShape(...cell(j, i, 'left'), 'diamond', { size: params.CELL_WIDTH })
         }
     }
 
